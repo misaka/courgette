@@ -8,15 +8,15 @@ $::RD_HINT = 1;
 use vars qw{ %stories %scenarios };
 
 
-# TODO: Figure out how to get the parser to be non-greedy so that it will
-#       parse the scenarios instead of just treating them as a part of the
-#       story description.
 my $grammar = q{
-
 story : story_description scenario(s)
+        {
+          $main::scenarios{ $item{ story_description } } = $item{ 'scenario(s)' }
+        }
 
 story_description : story_line story_stanza
-        { $main::stories{ $item{ story_line } } = $item{ story_stanza } }
+        { $main::stories{ $item{ story_line } } = $item{ story_stanza };
+          $item{ story_line } }
 
 story_line : /story:/i story_title
 
@@ -26,7 +26,7 @@ story_stanza : indented_line(s)
 
 scenario : scenario_line scenario_stanza
   {
-    $main::scenarios{ $item{ scenario_line } } = $item{ scenario_stanza }
+    { $item{ scenario_line } => $item{ scenario_stanza } }
   }
 
 scenario_line : /scenario:/i text
@@ -36,9 +36,9 @@ scenario_stanza : given_line and_given_line(s?)
                   then_line and_then_line(s?)
   {
     {
-      Given => [ $item{ given_line }, $item{ and_given_line } ],
-      When  => [ $item{ when_line },  $item{ and_when_line } ],
-      Then  => [ $item{ then_line },  $item{ and_then_line } ]
+      Given => [ $item{ given_line }, @{ $item{ 'and_given_line(s?)' } } ],
+      When  => [ $item{ when_line },  @{ $item{ 'and_when_line(s?)' } } ],
+      Then  => [ $item{ then_line },  @{ $item{ 'and_then_line(s?)' } } ]
     };
   }
 
@@ -74,8 +74,10 @@ Story: Using Zucchini
 Scenario: Getting command-line help.
 
 	  Given the pstory application is installed
+          And perl is installed
 	  When pstory is run with the option --help
           Then help information should be displayed
+          And the return value should be 0
 
 };
 
