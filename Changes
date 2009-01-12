@@ -1,0 +1,6 @@
+Revision history for Perl extension Zucchini.
+
+0.01  Mon Dec  1 13:19:40 2008
+	- original version; created by h2xs 1.23 with options
+		-AXc -n Zucchini
+
