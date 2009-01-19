@@ -1,5 +1,7 @@
 #!/usr/bin/env perl
 
+use lib qw{ lib };
+
 use Getopt::Long;
 use Zucchini::World;
 use Zucchini::Story;

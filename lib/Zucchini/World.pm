@@ -1,6 +1,6 @@
 package Zucchini::World;
 
-use Zucchini::Step::Given;
+# use Zucchini::Step::Given;
 
 use 5.008008;
 use strict;
@@ -27,45 +27,34 @@ our @EXPORT = qw();
 
 our $VERSION = '0.01';
 
-use vars qw( %condition %action %outcome $last_step_type );
+use vars qw( %steps );
 
 sub Given {
-  my $condition = shift;
+  my $step_name = shift;
   my $block = shift;
 
-  print( "Found pre-condition: $condition\n" );
-  $conditions{ $condition } = $block;
-  $last_step_hash = \%conditions;
+  $steps{ $step_name } = $block;
 }
 
 sub When {
-  my $action = shift;
+  my $step_name = shift;
   my $block = shift;
 
-  print( "Found action: $action\n" );
-  $actions{ $action } = $block;
-  $last_step_hash = \%actions;
+  $steps{ $step_name } = $block;
 }
 
 sub Then {
-  my $outcome = shift;
+  my $step_name = shift;
   my $block = shift;
 
-  print( "Found outcome: $outcome\n" );
-  $outcomes{ $outcome } = $block;
-  $last_step_hash = \%outcomes;
+  $steps{ $step_name } = $block;
 }
 
 sub And {
-  my $continuation = shift;
+  my $step_name = shift;
   my $block = shift;
 
-  $last_step_hash->{ $continuation } = $block;
-}
-
-
-sub reset_last_step {
-  $last_step_hash = undef;
+  $steps{ $step_name } = $block;
 }
 
 
