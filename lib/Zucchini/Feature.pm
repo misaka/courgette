@@ -1,37 +1,37 @@
 
 use FileHandle;
 
-package Zucchini::Story;
+package Zucchini::Feature;
 
-use vars qw( $story_grammar %stories );
+use vars qw( $feature_grammar %features );
 
 use Parse::RecDescent;
 use Data::Dumper;
 
 $::RD_HINT = 1;
 
-$story_grammar = q{
-story : story_description scenario(s)
+$feature_grammar = q{
+feature : feature_description scenario(s)
   {
     {
-      name        => $item{ story_description }[0],
-      description => $item{ story_description }[1],
+      name        => $item{ feature_description }[0],
+      description => $item{ feature_description }[1],
       scenarios   => $item{ 'scenario(s)' }
     }
   }
 
-story_description : story_title story_stanza
+feature_description : feature_title feature_stanza
   {
-    [ $item{ story_title }, $item{ story_stanza } ]
+    [ $item{ feature_title }, $item{ feature_stanza } ]
   }
 
-story_title : story_word text
+feature_title : feature_word text
 
-story_word : ( /story:/i | /feature:/i )
+feature_word : ( /feature:/i | /story:/i )
 
-story_stanza : story_stanza_line(s)
+feature_stanza : feature_stanza_line(s)
 
-story_stanza_line : ...! scenario_word text
+feature_stanza_line : ...! scenario_word text
 
 scenario : scenario_title scenario_stanza
   {
@@ -82,16 +82,16 @@ sub new {
   my $class = shift;
   my $filename = shift;
 
-  my $parser = Parse::RecDescent->new( $story_grammar );
+  my $parser = Parse::RecDescent->new( $feature_grammar );
 
   my $file = FileHandle->new( $filename );
   if( !defined( $file ) ) {
-    die( "could not open story file '$filename': $!" );
+    die( "could not open feature file '$filename': $!" );
   }
 
   my $original_RS = undef( $/ );
-  my $story = $file->getline();
-  my $self = $parser->story( $story );
+  my $feature = $file->getline();
+  my $self = $parser->feature( $feature );
 
   $file->close;
   $/ = $original_RS;

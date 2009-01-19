@@ -8,11 +8,11 @@ use Data::Dumper;
 # change 'tests => 1' to 'tests => last_test_to_print';
 
 use Test::More tests => 9;
-BEGIN { use_ok('Zucchini::Story') };
+BEGIN { use_ok('Zucchini::Feature') };
 
 #########################
 
-my $feature = Zucchini::Story->new( 't/test.feature' );
+my $feature = Zucchini::Feature->new( 't/test.feature' );
 ok( $feature, 'Features file was read.' );
 
 is( $feature->{ name }, 'Using Zucchini', 'Feature name is parsed correctly.' );
