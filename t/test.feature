@@ -18,3 +18,15 @@ Scenario: Running the tests.
           Then all the tests should pass
 	  And there should be much cause for celebration
 
+Feature: Feature Two
+
+As a develapper
+I want a bowl of cerael
+So that I do not starve before 12
+
+Scenario: No starving
+
+    Given I have the hunger
+    When I feed it some cereal
+    Then the hunger should go away
+

@@ -8,6 +8,9 @@ use warnings;
 
 require Exporter;
 
+use File::Find;
+use Data::Dumper;
+
 our @ISA = qw(Exporter);
 
 # Items to export into callers namespace by default. Note: do not export
@@ -25,48 +28,60 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} }, qw( Given When Then And ) );
 
 our @EXPORT = qw();
 
-our $VERSION = '0.01';
+sub _load_steps_file {
+  my $filename = shift;
+  my $return;
 
-use vars qw( %steps );
+  unless( $return = do $filename ) {
+    die( "Error parseing step file '$filename': $@" ) if $@;
+    die( "Error loading step file '$filename': $!" ) if !defined( $return );
+    die( "Step file '$filename' did not return true" ) if !$return;
+  }
+}
 
 sub Given {
   my $step_name = shift;
   my $block = shift;
 
-  $steps{ $step_name } = $block;
+  Zucchini::Step->new(
+    name  => $step_name,
+    block => $block
+  );
 }
 
 sub When {
   my $step_name = shift;
   my $block = shift;
 
-  $steps{ $step_name } = $block;
+  Zucchini::Step->new(
+    name  => $step_name,
+    block => $block
+  );
+#   $steps{ $step_name } = $block;
 }
 
 sub Then {
   my $step_name = shift;
   my $block = shift;
 
-  $steps{ $step_name } = $block;
+  Zucchini::Step->new(
+    name  => $step_name,
+    block => $block
+  );
+#   $steps{ $step_name } = $block;
 }
 
 sub And {
   my $step_name = shift;
   my $block = shift;
 
-  $steps{ $step_name } = $block;
+  Zucchini::Step->new(
+    name  => $step_name,
+    block => $block
+  );
+#   $steps{ $step_name } = $block;
 }
 
-
-sub load_from {
-  my $filename = shift;
-
-  require $filename;
-
-#   my $stepsFH = open( "<$filename" )
-#       or die( "Could not open steps file '$filename': $!" );
-
-}
 
 
 1;

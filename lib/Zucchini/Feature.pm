@@ -11,6 +11,8 @@ use Data::Dumper;
 $::RD_HINT = 1;
 
 $feature_grammar = q{
+features : feature(s)
+
 feature : feature_description scenario(s)
   {
     {
@@ -74,11 +76,9 @@ and_line : /and/i text
 
 text : /[^\n]+/
 
-spaces : /[ \t]+/
-
 };
 
-sub new {
+sub load_from_file {
   my $class = shift;
   my $filename = shift;
 
@@ -90,31 +90,40 @@ sub new {
   }
 
   my $original_RS = undef( $/ );
-  my $feature = $file->getline();
-  my $self = $parser->feature( $feature );
+  my $feature_text = $file->getline();
+  my @features;
+  foreach my $parsed_feature ( @{ $parser->features( $feature_text ) } ) {
+    push( @features, $class->new( %$parsed_feature ) );
+  }
 
   $file->close;
   $/ = $original_RS;
 
-  bless( $self, $class );
-  return $self;
+  return @features;
 }
 
-sub logger {
-  my( $self ) = shift;
-  my( $new_logger ) = shift;
+sub new {
+  my $class = shift;
+  my %params = @_;
 
-  if( defined( $new_logger ) ) {
-    my( $old_logger ) = $self->{ logger };
-    $self->{ logger } = $new_logger;
-    return( $old_logger );
-  } elsif( !defined( $self->{ logger } ) ) {
-    $self->{ logger } = Zucchini::Logger->new;
-    return( $self->{ logger } );
-  } else {
-    return( $self->{ logger } );
-  }
+  bless( \%params, $class );
 }
+
+# sub logger {
+#   my( $self ) = shift;
+#   my( $new_logger ) = shift;
+
+#   if( defined( $new_logger ) ) {
+#     my( $old_logger ) = $self->{ logger };
+#     $self->{ logger } = $new_logger;
+#     return( $old_logger );
+#   } elsif( !defined( $self->{ logger } ) ) {
+#     $self->{ logger } = Zucchini::Logger->new;
+#     return( $self->{ logger } );
+#   } else {
+#     return( $self->{ logger } );
+#   }
+# }
 
 
 1;

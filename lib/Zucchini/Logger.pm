@@ -1,32 +1,43 @@
 
 package Zucchini::Logger;
 
-use constants FATAL   => 0,
-              ERROR   => 1,
-              WARNING => 2,
-              INFO    => 3,
-              DEBUG   => 4;
+use DateTime;
+
+use Data::Dumper;
+
+use vars qw( %levels );
+
+%levels = (
+  FATAL   => 0,
+  ERROR   => 1,
+  WARNING => 2,
+  INFO    => 3,
+  DEBUG   => 4
+);
+
 
 sub new {
   my( $class ) = shift;
   my( %settings ) = @_;
-  my( $self ) = {};
+  my $self = {};
 
   bless( $self, $class );
   $self->initialize( %settings );
   return( $self );
 }
 
+
 sub initialize {
-  my( $self ) = shift;
+  my $self = shift;
   my( %settings ) = @_;
 
-  $self->{ level         } = $settings{ level }         || INFO;
-  $self->{ output_handle } = $settings{ output_handle } || STDERR;
+  $self->level( $settings{ level } || 'WARNING' );
+  $self->output_handle( $settings{ output_handle } || STDERR );
 }
 
+
 sub level {
-  my( $self ) = shift;
+  my $self = shift;
   my( $new_level ) = shift;
 
   if( defined( $new_level ) ) {
@@ -40,7 +51,7 @@ sub level {
 
 
 sub output_handle {
-  my( $self ) = shift;
+  my $self = shift;
   my( $new_handle ) = shift;
 
   if( defined( $new_handle ) ) {
@@ -53,39 +64,65 @@ sub output_handle {
 }
 
 
-sub fatal {
-  my( $self ) = shift;
-  my( $msg ) = shift;
+sub format_and_print {
+  my $self = shift;
+  my $level = shift;
+  my $msg  = shift;
+  my( @args ) = @_;
 
-  print( $self->output_handle $msg ) if( $self->level >= FATAL );
+  chomp( $msg );
+  $msg = sprintf(
+    "%s %s $msg\n",
+    DateTime->now->strftime( "%F %T" ),
+    $level,
+    @args
+  );
+  $self->output_handle->print( $msg );
+}
+
+sub fatal {
+  my $self = shift;
+  my $msg  = shift;
+
+  if( $levels{ $self->level } >= $levels{ 'FATAL' } ) {
+    $self->format_and_print( 'FATAL', $msg );
+  }
 }
 
 sub error {
-  my( $self ) = shift;
-  my( $msg ) = shift;
+  my $self = shift;
+  my $msg  = shift;
 
-  print( $self->output_handle $msg ) if( $self->level >= ERROR );
+  if( $levels{ $self->level } >= $levels{ 'ERROR' } ) {
+    $self->format_and_print( 'ERROR', $msg );
+  }
 }
 
 sub warning {
-  my( $self ) = shift;
-  my( $msg ) = shift;
+  my $self = shift;
+  my $msg  = shift;
 
-  print( $self->output_handle $msg ) if( $self->level >= WARNING );
+  if( $levels{ $self->level } >= $levels{ 'WARNING' } ) {
+    $self->format_and_print( 'WARNING', $msg );
+  }
 }
 
 sub info {
-  my( $self ) = shift;
-  my( $msg ) = shift;
+  my $self = shift;
+  my $msg  = shift;
 
-  print( $self->output_handle $msg ) if( $self->level >= INFO );
+  if( $levels{ $self->level } >= $levels{ 'INFO' } ) {
+    $self->format_and_print( 'INFO', $msg );
+  }
 }
 
 sub debug {
-  my( $self ) = shift;
-  my( $msg ) = shift;
+  my $self = shift;
+  my $msg  = shift;
 
-  print( $self->output_handle $msg ) if( $self->level >= DEBUG );
+  if( $levels{ $self->level } >= $levels{ 'DEBUG' } ) {
+    $self->format_and_print( 'DEBUG', $msg );
+  }
 }
 
 

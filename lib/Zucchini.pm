@@ -6,6 +6,14 @@ use warnings;
 
 require Exporter;
 
+use Zucchini::Logger;
+use Zucchini::World;
+
+use Error qw( :try );
+use File::Find;
+
+use Data::Dumper;
+
 our @ISA = qw(Exporter);
 
 # Items to export into callers namespace by default. Note: do not export
@@ -16,16 +24,50 @@ our @ISA = qw(Exporter);
 # If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
 # will save memory.
 our %EXPORT_TAGS = ( 'all' => [ qw(
-	
+
 ) ] );
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw(
-	
+
 );
 
 our $VERSION = '0.01';
+
+use vars qw/ $logger %steps @steps_paths /;
+
+sub load_steps {
+  find( \&load_from, @steps_paths );
+}
+
+
+sub load_from {
+  my $filename = $File::Find::name;
+
+  $logger->debug( "examining steps file: $filename" );
+
+  if( ! -f $filename ) {
+    $logger->debug( "not a file: $filename" );
+    return;
+  }
+
+  if( ! -f $filename ) {
+    $logger->debug(
+      "file does not match steps pattern '$Zucchini::steps_filename_pattern':"
+      . " $filename"
+    );
+    return;
+  }
+
+  $logger->info( "loading steps file: $filename" );
+  try {
+    Zucchini::World::_load_steps_file( $filename );
+  } catch Error with {
+    my $err = shift;
+    die( "Error loading steps from '$filename': " . $err->stringify );
+  };
+}
 
 
 # Preloaded methods go here.
