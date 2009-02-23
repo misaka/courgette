@@ -1,4 +1,4 @@
-package Zucchini::Step;
+package Courgette::Step;
 
 use vars qw( %steps );
 

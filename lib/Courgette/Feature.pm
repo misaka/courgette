@@ -1,7 +1,7 @@
 
 use FileHandle;
 
-package Zucchini::Feature;
+package Courgette::Feature;
 
 use vars qw( $feature_grammar %features );
 
@@ -118,7 +118,7 @@ sub new {
 #     $self->{ logger } = $new_logger;
 #     return( $old_logger );
 #   } elsif( !defined( $self->{ logger } ) ) {
-#     $self->{ logger } = Zucchini::Logger->new;
+#     $self->{ logger } = Courgette::Logger->new;
 #     return( $self->{ logger } );
 #   } else {
 #     return( $self->{ logger } );

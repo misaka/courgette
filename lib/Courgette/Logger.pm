@@ -1,5 +1,5 @@
 
-package Zucchini::Logger;
+package Courgette::Logger;
 
 use DateTime;
 

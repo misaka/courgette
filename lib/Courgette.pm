@@ -1,4 +1,4 @@
-package Zucchini;
+package Courgette;
 
 use 5.008008;
 use strict;
@@ -6,8 +6,8 @@ use warnings;
 
 require Exporter;
 
-use Zucchini::Logger;
-use Zucchini::World;
+use Courgette::Logger;
+use Courgette::World;
 
 use Error qw( :try );
 use File::Find;
@@ -20,7 +20,7 @@ our @ISA = qw(Exporter);
 # names by default without a very good reason. Use EXPORT_OK instead.
 # Do not simply export all your public functions/methods/constants.
 
-# This allows declaration	use Zucchini ':all';
+# This allows declaration	use Courgette ':all';
 # If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
 # will save memory.
 our %EXPORT_TAGS = ( 'all' => [ qw(
@@ -54,7 +54,7 @@ sub load_from {
 
   if( ! -f $filename ) {
     $logger->debug(
-      "file does not match steps pattern '$Zucchini::steps_filename_pattern':"
+      "file does not match steps pattern '$Courgette::steps_filename_pattern':"
       . " $filename"
     );
     return;
@@ -62,7 +62,7 @@ sub load_from {
 
   $logger->info( "loading steps file: $filename" );
   try {
-    Zucchini::World::_load_steps_file( $filename );
+    Courgette::World::_load_steps_file( $filename );
   } catch Error with {
     my $err = shift;
     die( "Error loading steps from '$filename': " . $err->stringify );
@@ -78,16 +78,16 @@ __END__
 
 =head1 NAME
 
-Zucchini - Perl extension for blah blah blah
+Courgette - Perl extension for blah blah blah
 
 =head1 SYNOPSIS
 
-  use Zucchini;
+  use Courgette;
   blah blah blah
 
 =head1 DESCRIPTION
 
-Stub documentation for Zucchini, created by h2xs. It looks like the
+Stub documentation for Courgette, created by h2xs. It looks like the
 author of the extension was negligent enough to leave the stub
 unedited.
 

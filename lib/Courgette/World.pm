@@ -1,6 +1,6 @@
-package Zucchini::World;
+package Courgette::World;
 
-# use Zucchini::Step::Given;
+# use Courgette::Step::Given;
 
 use 5.008008;
 use strict;
@@ -17,7 +17,7 @@ our @ISA = qw(Exporter);
 # names by default without a very good reason. Use EXPORT_OK instead.
 # Do not simply export all your public functions/methods/constants.
 
-# This allows declaration	use Zucchini ':all';
+# This allows declaration	use Courgette ':all';
 # If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
 # will save memory.
 our %EXPORT_TAGS = ( 'all' => [ qw(
@@ -43,7 +43,7 @@ sub Given {
   my $step_name = shift;
   my $block = shift;
 
-  Zucchini::Step->new(
+  Courgette::Step->new(
     name  => $step_name,
     block => $block
   );
@@ -53,7 +53,7 @@ sub When {
   my $step_name = shift;
   my $block = shift;
 
-  Zucchini::Step->new(
+  Courgette::Step->new(
     name  => $step_name,
     block => $block
   );
@@ -64,7 +64,7 @@ sub Then {
   my $step_name = shift;
   my $block = shift;
 
-  Zucchini::Step->new(
+  Courgette::Step->new(
     name  => $step_name,
     block => $block
   );
@@ -75,7 +75,7 @@ sub And {
   my $step_name = shift;
   my $block = shift;
 
-  Zucchini::Step->new(
+  Courgette::Step->new(
     name  => $step_name,
     block => $block
   );
@@ -89,15 +89,15 @@ __END__
 
 =head1 NAME
 
-Zucchini::World - Perl package to
+Courgette::World - Perl package to
 
 =head1 SYNOPSIS
 
-  zucchini STORY_FILE
+  courgette STORY_FILE
 
 =head1 DESCRIPTION
 
-  zucchini is a test story runner designed to output TAP-compatible results.
+  courgette is a test story runner designed to output TAP-compatible results.
   TAP is Perl's Test Anything Protocol.
 
 =head2 EXPORT
