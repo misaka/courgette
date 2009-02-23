@@ -1,5 +1,5 @@
 # Before `make install' is performed this script should be runnable with
-# `make test'. After `make install' it should work as `perl Zucchini.t'
+# `make test'. After `make install' it should work as `perl Courgette.t'
 
 use Data::Dumper;
 
@@ -8,20 +8,20 @@ use Data::Dumper;
 # change 'tests => 1' to 'tests => last_test_to_print';
 
 use Test::More tests => 9;
-BEGIN { use_ok('Zucchini::Feature') };
+BEGIN { use_ok('Courgette::Feature') };
 
 #########################
 
-my $feature = Zucchini::Feature->new( 't/test.feature' );
+my $feature = Courgette::Feature->new( 't/test.feature' );
 ok( $feature, 'Features file was read.' );
 
-is( $feature->{ name }, 'Using Zucchini', 'Feature name is parsed correctly.' );
+is( $feature->{ name }, 'Using Courgette', 'Feature name is parsed correctly.' );
 
 is_deeply(
     $feature->{ description },
     [
      'As a developper',
-     'I want to use the Zucchini runner',
+     'I want to use the Courgette runner',
      'So that I can use stories to test my application'
     ],
     'Feature description is parsed correctly.'
@@ -38,7 +38,7 @@ is(
 is_deeply(
     $feature->{ scenarios }->[0]->{ given },
     [
-     'the Zucchini application is installed',
+     'the Courgette application is installed',
      "is in the user's path"
     ],
     "Scenario 1 given steps are parsed correctly."
@@ -47,7 +47,7 @@ is_deeply(
 is_deeply(
     $feature->{ scenarios }->[0]->{ when },
     [
-     'zucchini is run with the option --help'
+     'courgette is run with the option --help'
     ],
     "Scenario 1 when steps are parsed correctly."
 );

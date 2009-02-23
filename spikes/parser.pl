@@ -65,7 +65,7 @@ spaces : /[ \t]+/
 };
 
 my $story = q{
-Story: Using Zucchini
+Story: Using Courgette
 
        As a developper
        I want to use the PStory runner

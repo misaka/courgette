@@ -6,11 +6,11 @@ use vars qw( $logger );
 use Error qw( :try );
 
 use Getopt::Long;
-use Zucchini;
-# use Zucchini::World;
-use Zucchini::Feature;
-use Zucchini::Logger;
-use Zucchini::Step;
+use Courgette;
+# use Courgette::World;
+use Courgette::Feature;
+use Courgette::Logger;
+use Courgette::Step;
 use Data::Dumper;
 use Cwd 'abs_path';
 
@@ -56,7 +56,7 @@ sub run_step {
 
   $logger->info( "Running $step_type step: " . $step_name );
 
-  my( $step, $params ) = Zucchini::Step->find( $step_name );
+  my( $step, $params ) = Courgette::Step->find( $step_name );
   if ( $step ) {
     try {
       $step->run( @$params );
@@ -73,13 +73,14 @@ sub run_step {
 sub run {
   my @args = @_;
   my @stories = parse_args( @args );
-  $logger = $Zucchini::logger = Zucchini::Logger->new();
+  $logger = $Courgette::logger = Courgette::Logger->new();
+  $logger->level( 'DEBUG' );
 
-  push( @Zucchini::steps_paths, abs_path( 'steps' ) );
-  Zucchini::load_steps;
+  push( @Courgette::steps_paths, abs_path( 'steps' ) );
+  Courgette::load_steps;
 
   foreach $filename ( @ARGV ) {
-    my @features = Zucchini::Feature->load_from_file( $filename );
+    my @features = Courgette::Feature->load_from_file( $filename );
 
     foreach my $feature ( @features ) {
 
