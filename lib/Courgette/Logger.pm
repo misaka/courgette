@@ -31,37 +31,41 @@ sub initialize {
   my $self = shift;
   my( %settings ) = @_;
 
-  $self->level( $settings{ level } || 'WARNING' );
-  $self->output_handle( $settings{ output_handle } || STDERR );
+  $self->set_level( $settings{ level } || 'WARNING' );
+  $self->set_output_handle( $settings{ output_handle } || STDERR );
 }
 
 
-sub level {
-  my $self = shift;
-  my( $new_level ) = shift;
+sub attr_accessor {
+  my %options = @_;
 
-  if( defined( $new_level ) ) {
-    my( $old_level ) = $self->{ level };
-    $self->{ level } = $new_level;
-    return( $old_level );
-  } else {
-    return( $self->{ level } );
+  my $name = $options{ name };
+
+  my $set_eval = <<EVAL;
+  sub set_$name {
+    my \$self = shift;
+    my \$new_value = shift;
+    my \$old_value = \$self->{ $name };
+
+    \$self->{ $name } = \$new_value;
+    return \$old_value;
   }
-}
+EVAL
+  eval $set_eval;
+  die( "Error evaling setter for $name accessor: $@" ) if $@;
 
-
-sub output_handle {
-  my $self = shift;
-  my( $new_handle ) = shift;
-
-  if( defined( $new_handle ) ) {
-    my( $old_handle ) = $self->{ output_handle };
-    $self->{ output_handle } = $new_handle;
-    return( $old_handle );
-  } else {
-    return( $self->{ output_handle } );
+  my $get_eval = <<EVAL;
+  sub get_$name {
+    return \$_[0]->{ $name };
   }
+EVAL
+  eval $get_eval;
+  die( "Error evaling getter for $name accessor: $@" ) if $@;
 }
+
+attr_accessor name => 'level';
+attr_accessor name => 'output_handle';
+attr_accessor name => 'appname';
 
 
 sub format_and_print {
@@ -71,20 +75,25 @@ sub format_and_print {
   my( @args ) = @_;
 
   chomp( $msg );
+  # If we ever want to add date/time. it might look like this:
+  #   DateTime->now->strftime( "%F %T" ),
   $msg = sprintf(
-    "%s %s $msg\n",
-    DateTime->now->strftime( "%F %T" ),
+    "[%s] $msg\n",
     $level,
     @args
   );
-  $self->output_handle->print( $msg );
+
+  $msg = $self->get_appname . ': ' . $msg
+      if( $self->get_appname );
+
+  $self->get_output_handle->print( $msg );
 }
 
 sub fatal {
   my $self = shift;
   my $msg  = shift;
 
-  if( $levels{ $self->level } >= $levels{ 'FATAL' } ) {
+  if( $levels{ $self->get_level } >= $levels{ 'FATAL' } ) {
     $self->format_and_print( 'FATAL', $msg );
   }
 }
@@ -93,7 +102,7 @@ sub error {
   my $self = shift;
   my $msg  = shift;
 
-  if( $levels{ $self->level } >= $levels{ 'ERROR' } ) {
+  if( $levels{ $self->get_level } >= $levels{ 'ERROR' } ) {
     $self->format_and_print( 'ERROR', $msg );
   }
 }
@@ -102,7 +111,7 @@ sub warning {
   my $self = shift;
   my $msg  = shift;
 
-  if( $levels{ $self->level } >= $levels{ 'WARNING' } ) {
+  if( $levels{ $self->get_level } >= $levels{ 'WARNING' } ) {
     $self->format_and_print( 'WARNING', $msg );
   }
 }
@@ -111,7 +120,7 @@ sub info {
   my $self = shift;
   my $msg  = shift;
 
-  if( $levels{ $self->level } >= $levels{ 'INFO' } ) {
+  if( $levels{ $self->get_level } >= $levels{ 'INFO' } ) {
     $self->format_and_print( 'INFO', $msg );
   }
 }
@@ -120,7 +129,7 @@ sub debug {
   my $self = shift;
   my $msg  = shift;
 
-  if( $levels{ $self->level } >= $levels{ 'DEBUG' } ) {
+  if( $levels{ $self->get_level } >= $levels{ 'DEBUG' } ) {
     $self->format_and_print( 'DEBUG', $msg );
   }
 }

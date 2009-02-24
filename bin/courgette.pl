@@ -5,12 +5,13 @@ use vars qw( $logger );
 
 use Error qw( :try );
 
-use Getopt::Long;
 use Courgette;
-# use Courgette::World;
 use Courgette::Feature;
 use Courgette::Logger;
 use Courgette::Step;
+use Courgette::Display::PlainConsole;
+
+use Getopt::Long;
 use Data::Dumper;
 use Cwd 'abs_path';
 
@@ -74,7 +75,10 @@ sub run {
   my @args = @_;
   my @stories = parse_args( @args );
   $logger = $Courgette::logger = Courgette::Logger->new();
-  $logger->level( 'DEBUG' );
+  $logger->set_level( 'DEBUG' );
+  $logger->set_appname( $0 );
+
+  $display = Courgette::Display::PlainConsole;
 
   push( @Courgette::steps_paths, abs_path( 'steps' ) );
   Courgette::load_steps;
@@ -84,6 +88,7 @@ sub run {
 
     foreach my $feature ( @features ) {
 
+      $display->feature( $feature->{ name } );
       $logger->info( "Running story: " . $feature->{ name } );
       foreach my $description_line ( @{ $feature->{ description } } ) {
 # 	print( $description_line . "\n" );
