@@ -66,7 +66,7 @@ sub run_step {
       $logger->error( "Error running $step_type $step_name\n" . $err->stringify );
     };
   } else {
-    display_missing_step( $step_name );
+    $display->step_missing( $step_name );
   }
 }
 
@@ -74,13 +74,14 @@ sub run_step {
 sub run {
   my @args = @_;
   my @stories = parse_args( @args );
-  $logger = $Courgette::logger = Courgette::Logger->new();
-  $logger->set_level( 'DEBUG' );
-  $logger->set_appname( $0 );
 
-  $display = Courgette::Display::PlainConsole;
+  $logger = Courgette::Logger->instance();
+  $display = Courgette::Display::PlainConsole->new;
 
+  # ToDo: the path to the steps dir should be set through a policy or a
+  #       configuration point, not hard-coded here.
   push( @Courgette::steps_paths, abs_path( 'steps' ) );
+
   Courgette::load_steps;
 
   foreach $filename ( @ARGV ) {
@@ -89,9 +90,8 @@ sub run {
     foreach my $feature ( @features ) {
 
       $display->feature( $feature->{ name } );
-      $logger->info( "Running story: " . $feature->{ name } );
       foreach my $description_line ( @{ $feature->{ description } } ) {
-# 	print( $description_line . "\n" );
+	$display->description( $description_line );
       }
 
       foreach my $scenario ( @{ $feature->{ scenarios } } ) {

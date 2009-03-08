@@ -1,14 +1,13 @@
 
 package Courgette::Logger;
 
+use Class::Singleton;
 use DateTime;
-
 use Data::Dumper;
 
-use Courgette::Utils qw( attr_accessor );
+use MooseX::Singleton;
 
-use base qw( Courgette::Utils );
-use vars qw( %levels );
+use vars qw( $instance %levels );
 
 %levels = (
   FATAL   => 0,
@@ -19,29 +18,21 @@ use vars qw( %levels );
 );
 
 
-sub new {
-  my( $class ) = shift;
-  my( %settings ) = @_;
-  my $self = {};
+has 'level' => (
+  is => 'rw',
+  isa => 'Str',
+  default => 'WARNING'
+);
 
-  bless( $self, $class );
-  $self->initialize( %settings );
-  return( $self );
-}
+has 'appname' => (
+  is => 'rw',
+  isa => 'Str'
+);
 
-
-sub initialize {
-  my $self = shift;
-  my( %settings ) = @_;
-
-  $self->set_level( $settings{ level } || 'WARNING' );
-  $self->set_output_handle( $settings{ output_handle } || STDERR );
-}
-
-
-attr_accessor 'level';
-attr_accessor 'output_handle';
-attr_accessor 'appname';
+has 'output_handle' => (
+  is => 'rw',
+  default => sub { \*STDERR }
+);
 
 
 sub format_and_print {
@@ -55,21 +46,21 @@ sub format_and_print {
   #   DateTime->now->strftime( "%F %T" ),
   $msg = sprintf(
     "[%s] $msg\n",
-    $level,
+    $self->level,
     @args
   );
 
-  $msg = $self->get_appname . ': ' . $msg
-      if( $self->get_appname );
+  $msg = $self->appname . ': ' . $msg
+      if( $self->appname );
 
-  $self->get_output_handle->print( $msg );
+  $self->output_handle->print( $msg );
 }
 
 sub fatal {
   my $self = shift;
   my $msg  = shift;
 
-  if( $levels{ $self->get_level } >= $levels{ 'FATAL' } ) {
+  if( $levels{ $self->level } >= $levels{ 'FATAL' } ) {
     $self->format_and_print( 'FATAL', $msg );
   }
 }
@@ -78,7 +69,7 @@ sub error {
   my $self = shift;
   my $msg  = shift;
 
-  if( $levels{ $self->get_level } >= $levels{ 'ERROR' } ) {
+  if( $levels{ $self->level } >= $levels{ 'ERROR' } ) {
     $self->format_and_print( 'ERROR', $msg );
   }
 }
@@ -87,7 +78,7 @@ sub warning {
   my $self = shift;
   my $msg  = shift;
 
-  if( $levels{ $self->get_level } >= $levels{ 'WARNING' } ) {
+  if( $levels{ $self->level } >= $levels{ 'WARNING' } ) {
     $self->format_and_print( 'WARNING', $msg );
   }
 }
@@ -96,7 +87,7 @@ sub info {
   my $self = shift;
   my $msg  = shift;
 
-  if( $levels{ $self->get_level } >= $levels{ 'INFO' } ) {
+  if( $levels{ $self->level } >= $levels{ 'INFO' } ) {
     $self->format_and_print( 'INFO', $msg );
   }
 }
@@ -105,7 +96,7 @@ sub debug {
   my $self = shift;
   my $msg  = shift;
 
-  if( $levels{ $self->get_level } >= $levels{ 'DEBUG' } ) {
+  if( $levels{ $self->level } >= $levels{ 'DEBUG' } ) {
     $self->format_and_print( 'DEBUG', $msg );
   }
 }

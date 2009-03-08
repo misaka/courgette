@@ -1,10 +1,32 @@
 package Courgette::Display::PlainConsole;
 
-sub feature {
+use base qw( Courgette::Display );
+
+sub new {
   my $class = shift;
+
+  bless( {}, $class );
+}
+
+sub feature {
+  my $self = shift;
   my $name = shift;
 
-  print( "Running feature: " . $name . "\n" );
+  print( "Feature: " . $name . "\n" );
+}
+
+sub description {
+  my $self = shift;
+  my $name = shift;
+
+  print( "\t$name\n" );
+}
+
+sub step_missing {
+  my $self = shift;
+  my $name = shift;
+
+  print( "Missing code for step: $name\n" );
 }
 
 1;

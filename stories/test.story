@@ -8,9 +8,9 @@ Story: Using PStories
 
 Scenario: Getting command-line help.
 
-	  Given the zucchini application is installed
+	  Given the courgette application is installed
           And is in the user's path
-	  When zucchini is run with the option --help
+	  When courgette is run with the option --help
           Then help information should be displayed
 
 

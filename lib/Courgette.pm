@@ -45,6 +45,7 @@ sub load_steps {
 sub load_from {
   my $filename = $File::Find::name;
 
+  my $logger = Courgette::Logger->instance();
   $logger->debug( "examining steps file: $filename" );
 
   if( ! -f $filename ) {

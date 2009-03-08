@@ -3,12 +3,29 @@ use FileHandle;
 
 package Courgette::Feature;
 
+use Moose;
+
 use vars qw( $feature_grammar %features );
 
 use Parse::RecDescent;
 use Data::Dumper;
 
 $::RD_HINT = 1;
+
+has 'name' => (
+  is => 'rw',
+  isa => 'Str'
+);
+
+has 'description' => (
+  is => 'rw',
+  isa => 'ArrayRef'
+);
+
+has 'scenarios' => (
+  is => 'rw',
+  isa => 'ArrayRef'
+);
 
 $feature_grammar = q{
 features : feature(s)
@@ -101,29 +118,6 @@ sub load_from_file {
 
   return @features;
 }
-
-sub new {
-  my $class = shift;
-  my %params = @_;
-
-  bless( \%params, $class );
-}
-
-# sub logger {
-#   my( $self ) = shift;
-#   my( $new_logger ) = shift;
-
-#   if( defined( $new_logger ) ) {
-#     my( $old_logger ) = $self->{ logger };
-#     $self->{ logger } = $new_logger;
-#     return( $old_logger );
-#   } elsif( !defined( $self->{ logger } ) ) {
-#     $self->{ logger } = Courgette::Logger->new;
-#     return( $self->{ logger } );
-#   } else {
-#     return( $self->{ logger } );
-#   }
-# }
 
 
 1;

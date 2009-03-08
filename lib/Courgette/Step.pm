@@ -1,20 +1,37 @@
 package Courgette::Step;
 
+use Moose;
+
 use vars qw( %steps );
 
 use Data::Dumper;
 
-sub new {
-  my $class = shift;
-  my %params = @_;
+has 'name' => (
+  is => 'rw',
+  isa => 'Str'
+);
 
-  die( "Name parameter not provided" ) if( !exists( $params{ name } ) );
-  die( "Block parameter not provided" ) if( !exists( $params{ block } ) );
+has 'block' => (
+  is => 'rw',
+  isa => 'CodeRef'
+);
 
-  my $self = bless( \%params, $class );
-
-  $steps{ $params{ name } } = $self;
+sub BUILD {
+  my $self = shift;
+  $steps{ $self->name } = $self;
 }
+
+# sub new {
+#   my $class = shift;
+#   my %params = @_;
+
+#   die( "Name parameter not provided" ) if( !exists( $params{ name } ) );
+#   die( "Block parameter not provided" ) if( !exists( $params{ block } ) );
+
+#   my $self = bless( \%params, $class );
+
+#   $steps{ $params{ name } } = $self;
+# }
 
 
 sub find {
