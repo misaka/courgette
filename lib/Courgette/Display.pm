@@ -18,4 +18,10 @@ sub step_missing {
   );
 }
 
+sub step_failed {
+  Courgette::Logger->instance->warning(
+    "No display method defined for 'step_failed'."
+  );
+}
+
 1;

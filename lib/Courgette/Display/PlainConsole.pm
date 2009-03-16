@@ -29,4 +29,12 @@ sub step_missing {
   print( "Missing code for step: $name\n" );
 }
 
+sub step_failed {
+  my $self = shift;
+  my $name = shift;
+  my $err  = shift;
+
+  print( "Step '$name' failed: " . $err->stacktrace );
+}
+
 1;

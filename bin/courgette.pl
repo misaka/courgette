@@ -5,6 +5,8 @@ use vars qw( $logger );
 
 use Error qw( :try );
 
+$Error::Debug = 1;
+
 use Courgette;
 use Courgette::Feature;
 use Courgette::Logger;
@@ -20,13 +22,6 @@ sub parse_args {
   my @files = @args;
 
   return @files;
-}
-
-
-sub display_missing_step {
-  my $step = shift;
-
-  print( "Step not defined: $step\n" );
 }
 
 
@@ -55,7 +50,7 @@ sub run_step {
   my $step_type = shift;
   my $step_name = shift;
 
-  $logger->info( "Running $step_type step: " . $step_name );
+  $logger->verbose( "Running $step_type step: " . $step_name );
 
   my( $step, $params ) = Courgette::Step->find( $step_name );
   if ( $step ) {
@@ -63,9 +58,8 @@ sub run_step {
       $step->run( @$params );
     } catch Error with {
       my $err = shift;
-      $logger->error(
-	"Error running $step_type $step_name: " . $err->stringify
-      );
+
+      $display->step_failed( $step_name, $err );
     };
   } else {
     $display->step_missing( $step_name );
@@ -97,7 +91,7 @@ sub run {
       }
 
       foreach my $scenario ( @{ $feature->{ scenarios } } ) {
-	$logger->info( "Running scenario: " . $scenario->{ name } );
+	$logger->verbose( "Running scenario: " . $scenario->{ name } );
 
 	foreach my $given_step ( @{ $scenario->{ given } } ) {
 	  run_given_step( $given_step );

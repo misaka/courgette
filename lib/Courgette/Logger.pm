@@ -13,7 +13,7 @@ use vars qw( $instance %levels );
   FATAL   => 0,
   ERROR   => 1,
   WARNING => 2,
-  INFO    => 3,
+  VERBOSE => 3,
   DEBUG   => 4
 );
 
@@ -83,12 +83,12 @@ sub warning {
   }
 }
 
-sub info {
+sub verbose {
   my $self = shift;
   my $msg  = shift;
 
-  if( $levels{ $self->level } >= $levels{ 'INFO' } ) {
-    $self->format_and_print( 'INFO', $msg );
+  if( $levels{ $self->level } >= $levels{ 'VERBOSE' } ) {
+    $self->format_and_print( 'VERBOSE', $msg );
   }
 }
 

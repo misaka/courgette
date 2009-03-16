@@ -61,7 +61,7 @@ sub load_from {
     return;
   }
 
-  $logger->info( "loading steps file: $filename" );
+  $logger->verbose( "loading steps file: $filename" );
   try {
     Courgette::World::_load_steps_file( $filename );
   } catch Error with {
