@@ -10,7 +10,7 @@ When "courgette is run with the option --help", sub {
 
 
 Then "help information should be displayed", sub {
-  is( $courgette_output, "..." );
+  ok( $courgette_output, "help information is incorrect" );
 };
 
 1;

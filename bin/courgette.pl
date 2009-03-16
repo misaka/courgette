@@ -40,14 +40,14 @@ sub run_given_step {
 sub run_when_step {
   my $step_name = shift;
 
-  run_step( 'given', $step_name );
+  run_step( 'when', $step_name );
 }
 
 
 sub run_then_step {
   my $step_name = shift;
 
-  run_step( 'given', $step_name );
+  run_step( 'then', $step_name );
 }
 
 
@@ -63,7 +63,9 @@ sub run_step {
       $step->run( @$params );
     } catch Error with {
       my $err = shift;
-      $logger->error( "Error running $step_type $step_name\n" . $err->stringify );
+      $logger->error(
+	"Error running $step_type $step_name: " . $err->stringify
+      );
     };
   } else {
     $display->step_missing( $step_name );
