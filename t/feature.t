@@ -12,7 +12,7 @@ BEGIN { use_ok('Courgette::Feature') };
 
 #########################
 
-my $feature = Courgette::Feature->new( 't/test.feature' );
+my( $feature ) = Courgette::Feature->load_from_file( 't/test.feature' );
 ok( $feature, 'Features file was read.' );
 
 is( $feature->{ name }, 'Using Courgette', 'Feature name is parsed correctly.' );

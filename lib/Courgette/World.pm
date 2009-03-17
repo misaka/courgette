@@ -48,7 +48,6 @@ sub When {
     name  => $step_name,
     block => $block
   );
-#   $steps{ $step_name } = $block;
 }
 
 sub Then {
@@ -59,7 +58,6 @@ sub Then {
     name  => $step_name,
     block => $block
   );
-#   $steps{ $step_name } = $block;
 }
 
 sub And {
@@ -70,7 +68,6 @@ sub And {
     name  => $step_name,
     block => $block
   );
-#   $steps{ $step_name } = $block;
 }
 
 
