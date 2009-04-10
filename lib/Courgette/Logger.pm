@@ -1,7 +1,6 @@
 
 package Courgette::Logger;
 
-use Class::Singleton;
 use DateTime;
 use Data::Dumper;
 
