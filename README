@@ -5,12 +5,13 @@ SYNOPSIS
     $ courgette features/login.feature
 
 DESCRIPION
-    Courgette is a testing framework to write and run tests in the form of
+    Courgette is a BDD testing framework to write and run tests in the form of
     natural language stories. These stories describe features that are desired
-    in a software package and provide a list of steps to explain how they
-    should work. These steps are codified in a way that ties them to code,
-    written by a developer, in the background, and it's Courgettes job to run
-    the code for the steps and to report their success / failure.
+    in a software package using scenarios which, in turn, provide a list of
+    steps to explain how that feature in that scenario should work. These
+    steps are codified in a way that ties them to Perl code, written by a
+    developer, and it's Courgettes job to run the code for the steps and to
+    report on their success on failure.
 
     See documentation in the executable and the modules for more information.
 
@@ -22,8 +23,37 @@ INSTALLATION
        make test
        make install
 
-DEPENDENCIES
+CONTENTS
+    Perl script:
+      courgette - Test runner that reads the feature stories, runs the steps
+                  and displays test results and diagnostic information.
 
+    Perl modules:
+      Courgette
+        Container for loading the scenarios and steps.
+
+      Courgette::Display
+        Interface used by the runner to display test results and
+        diagnostics. This is inherited by modules that implement displaying in
+        specific formats, such as plain-text or HTML, or different devices.
+
+      Courgette::Display::PlainConsole
+        Display module for displaying plain-text to the console.
+
+      Courgette::Logger
+        Logging mechanism for verbose logging.
+
+      Courgette::Feature
+        Abstraction of a feature's stories with all it's scenarios and steps.
+
+      Courgette::World
+        Module that defines the environment that the step files are run in.
+
+      Courgette::Step
+        Encapsulates the code refs that implement the steps listed for the
+        scenarios.
+
+DEPENDENCIES
     This module requires these other modules and libraries:
 
       Moose

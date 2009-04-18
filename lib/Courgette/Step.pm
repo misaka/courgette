@@ -21,19 +21,6 @@ sub BUILD {
   $steps{ $self->name } = $self;
 }
 
-# sub new {
-#   my $class = shift;
-#   my %params = @_;
-
-#   die( "Name parameter not provided" ) if( !exists( $params{ name } ) );
-#   die( "Block parameter not provided" ) if( !exists( $params{ block } ) );
-
-#   my $self = bless( \%params, $class );
-
-#   $steps{ $params{ name } } = $self;
-# }
-
-
 sub find {
   my $class = shift;
   my $text  = shift;
