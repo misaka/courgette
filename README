@@ -40,9 +40,6 @@ CONTENTS
       Courgette::Display::PlainConsole
         Display module for displaying plain-text to the console.
 
-      Courgette::Logger
-        Logging mechanism for verbose logging.
-
       Courgette::Feature
         Feature stories with all it's scenarios and steps.
 
