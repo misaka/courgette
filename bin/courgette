@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 use lib qw{ lib };
-use vars qw( $logger );
+use vars qw( $verbosity );
 
 use Error qw( :try );
 
@@ -13,44 +13,53 @@ use Courgette::Logger;
 use Courgette::Step;
 use Courgette::Display::PlainConsole;
 
-use Getopt::Long;
+use Getopt::Long qw( GetOptionsFromArray );
 use Data::Dumper;
 use Cwd 'abs_path';
+use Pod::Usage;
+
+$verbosity = 0;
 
 sub parse_args {
   my @args = @_;
-  my @files = @args;
+  my @files;
 
-  return @files;
+  my( $help, $verbose );
+  my( $ret, $files ) = GetOptionsFromArray(
+    \@args,
+    'h|help'    => \$help,
+    'v|verbose' => \$verbose
+  ) or pod2usage( 1 );
+
+  pod2usage( 0 ) if( $help );
+
+  if( $verbose ) {
+    $verbosity = 1;
+  }
+
+  return @args;
 }
 
 
-sub run_given_step {
-  my $step_name = shift;
+sub verbose {
+  my $msg = shift;
 
-  run_step( 'given', $step_name );
+  print( $msg ) if( $verbosity > 0 );
 }
 
 
-sub run_when_step {
-  my $step_name = shift;
+sub debug {
+  my $msg = shift;
 
-  run_step( 'when', $step_name );
-}
-
-
-sub run_then_step {
-  my $step_name = shift;
-
-  run_step( 'then', $step_name );
+  print( $msg ) if( $verbosity > 1 );
 }
 
 
 sub run_step {
-  my $step_type = shift;
+#   my $step_type = shift;
   my $step_name = shift;
 
-  $logger->verbose( "Running $step_type step: " . $step_name );
+  debug( "Running step: " . $step_name );
 
   my( $step, $params ) = Courgette::Step->find( $step_name );
   if ( $step ) {
@@ -71,7 +80,6 @@ sub run {
   my @args = @_;
   my @stories = parse_args( @args );
 
-  $logger = Courgette::Logger->instance();
   $display = Courgette::Display::PlainConsole->new;
 
   # ToDo: the path to the steps dir should be set through a policy or a
@@ -80,7 +88,7 @@ sub run {
 
   Courgette::load_steps;
 
-  foreach $filename ( @ARGV ) {
+  foreach $filename ( @stories ) {
     my @features = Courgette::Feature->load_from_file( $filename );
 
     foreach my $feature ( @features ) {
@@ -91,16 +99,19 @@ sub run {
       }
 
       foreach my $scenario ( @{ $feature->{ scenarios } } ) {
-	$logger->verbose( "Running scenario: " . $scenario->{ name } );
+	verbose( "Running scenario: " . $scenario->{ name } );
 
 	foreach my $given_step ( @{ $scenario->{ given } } ) {
-	  run_given_step( $given_step );
+	  verbose( "Running 'Given' steps" );
+	  run_step( $given_step );
 	}
 	foreach my $when_step ( @{ $scenario->{ when } } ) {
-	  run_when_step( $when_step );
+	  verbose( "Running 'When' steps" );
+	  run_step( $when_step );
 	}
 	foreach my $then_step ( @{ $scenario->{ then } } ) {
-	  run_then_step( $then_step );
+	  verbose( "Running 'Then' steps" );
+	  run_step( $then_step );
 	}
 
       }
@@ -115,4 +126,23 @@ sub run {
 if( __PACKAGE__ eq 'main' ) {
   run( @ARGV );
 }
+
+__END__
+
+=head1 NAME
+
+courgette - Run feature tests.
+
+=head1 SYNOPSIS
+
+courgette [options] [feature_file | feature_dir]
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--help>
+
+Display help information.
+
 

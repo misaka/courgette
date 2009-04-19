@@ -30,7 +30,7 @@ CONTENTS
 
     Perl modules:
       Courgette
-        Container for loading the scenarios and steps.
+        Module that loads the features and steps.
 
       Courgette::Display
         Interface used by the runner to display test results and
@@ -44,7 +44,7 @@ CONTENTS
         Logging mechanism for verbose logging.
 
       Courgette::Feature
-        Abstraction of a feature's stories with all it's scenarios and steps.
+        Feature stories with all it's scenarios and steps.
 
       Courgette::World
         Module that defines the environment that the step files are run in.
