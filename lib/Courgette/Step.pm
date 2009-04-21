@@ -39,9 +39,10 @@ sub find {
 
 sub run {
   my $self = shift;
+  my $world = shift;
   my @params = @_;
 
-  $self->{ block }->( @params );
+  $self->{ block }->( $world, @params );
 }
 
 

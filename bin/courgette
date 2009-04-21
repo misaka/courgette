@@ -1,7 +1,6 @@
 #!/usr/bin/env perl
 
 use lib qw{ lib };
-use vars qw( $verbosity );
 
 use Error qw( :try );
 
@@ -9,7 +8,6 @@ $Error::Debug = 1;
 
 use Courgette;
 use Courgette::Feature;
-use Courgette::Logger;
 use Courgette::Step;
 use Courgette::Display::PlainConsole;
 
@@ -24,54 +22,44 @@ sub parse_args {
   my @args = @_;
   my @files;
 
-  my( $help, $verbose );
+  my( $help, $verbose, $debug );
   my( $ret, $files ) = GetOptionsFromArray(
     \@args,
     'h|help'    => \$help,
-    'v|verbose' => \$verbose
+    'v|verbose' => \$verbose,
+    'd|debug'   => \$debug
   ) or pod2usage( 1 );
 
   pod2usage( 0 ) if( $help );
 
-  if( $verbose ) {
-    $verbosity = 1;
-  }
+  $Courgette::verbosity = 1 if( $verbose );
+  $Courgette::verbosity = 2 if( $debug );
 
   return @args;
 }
 
 
-sub verbose {
-  my $msg = shift;
-
-  print( $msg ) if( $verbosity > 0 );
-}
-
-
-sub debug {
-  my $msg = shift;
-
-  print( $msg ) if( $verbosity > 1 );
-}
-
-
 sub run_step {
-#   my $step_type = shift;
   my $step_name = shift;
+  my $world = shift;
 
-  debug( "Running step: " . $step_name );
+  Courgette::verbose( "Running step: " . $step_name );
 
   my( $step, $params ) = Courgette::Step->find( $step_name );
   if ( $step ) {
     try {
-      $step->run( @$params );
+      local $Data::Dumper::Indent = 0;
+      Courgette::debug( Data::Dumper->Dump( [ $world ], [ qw( *Courgette::World ) ] ) );
+      $step->run( $world, @$params );
     } catch Error with {
       my $err = shift;
 
       $display->step_failed( $step_name, $err );
+      exit( 2 );
     };
   } else {
     $display->step_missing( $step_name );
+    exit( 2 );
   }
 }
 
@@ -99,19 +87,18 @@ sub run {
       }
 
       foreach my $scenario ( @{ $feature->{ scenarios } } ) {
-	verbose( "Running scenario: " . $scenario->{ name } );
+	Courgette::verbose( "Running scenario: " . $scenario->{ name } );
+
+	my $world = Courgette::World->new;
 
 	foreach my $given_step ( @{ $scenario->{ given } } ) {
-	  verbose( "Running 'Given' steps" );
-	  run_step( $given_step );
+	  run_step( $given_step, $world );
 	}
 	foreach my $when_step ( @{ $scenario->{ when } } ) {
-	  verbose( "Running 'When' steps" );
-	  run_step( $when_step );
+	  run_step( $when_step, $world );
 	}
 	foreach my $then_step ( @{ $scenario->{ then } } ) {
-	  verbose( "Running 'Then' steps" );
-	  run_step( $then_step );
+	  run_step( $then_step, $world );
 	}
 
       }

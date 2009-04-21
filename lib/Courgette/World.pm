@@ -4,6 +4,8 @@ use 5.008008;
 use strict;
 use warnings;
 
+use Moose;
+
 use Courgette::Error::AssertFailed;
 
 use File::Find;
@@ -40,6 +42,7 @@ sub Given {
   );
 }
 
+
 sub When {
   my $step_name = shift;
   my $block = shift;
@@ -50,6 +53,7 @@ sub When {
   );
 }
 
+
 sub Then {
   my $step_name = shift;
   my $block = shift;
@@ -59,6 +63,7 @@ sub Then {
     block => $block
   );
 }
+
 
 sub And {
   my $step_name = shift;

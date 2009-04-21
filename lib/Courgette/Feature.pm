@@ -109,6 +109,7 @@ sub load_from_file {
   my $original_RS = undef( $/ );
   my $feature_text = $file->getline();
   my @features;
+
   foreach my $parsed_feature ( @{ $parser->features( $feature_text ) } ) {
     push( @features, $class->new( %$parsed_feature ) );
   }

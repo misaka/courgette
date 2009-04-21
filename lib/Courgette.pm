@@ -4,9 +4,8 @@ use 5.008008;
 use strict;
 use warnings;
 
-require Exporter;
+use vars qw( $verbosity );
 
-use Courgette::Logger;
 use Courgette::World;
 
 use Error qw( :try );
@@ -14,11 +13,26 @@ use File::Find;
 
 use Data::Dumper;
 
-our @ISA = qw(Exporter);
-
 our $VERSION = '0.01';
 
 use vars qw/ $logger %steps @steps_paths /;
+
+
+sub verbose {
+  my $msg = shift;
+
+  chomp( $msg );
+  print( $msg . "\n" ) if( $verbosity && $verbosity > 0 );
+}
+
+
+sub debug {
+  my $msg = shift;
+
+  chomp( $msg );
+  print( $msg . "\n" ) if( $verbosity && $verbosity > 1 );
+}
+
 
 sub load_steps {
   find( \&load_from, @steps_paths );
@@ -28,23 +42,22 @@ sub load_steps {
 sub load_from {
   my $filename = $File::Find::name;
 
-  my $logger = Courgette::Logger->instance();
-  $logger->debug( "examining steps file: $filename" );
+  debug( "examining steps file: $filename" );
 
   if( ! -f $filename ) {
-    $logger->debug( "not a file: $filename" );
+    debug( "not a file: $filename" );
     return;
   }
 
   if( ! -f $filename ) {
-    $logger->debug(
+    debug(
       "file does not match steps pattern '$Courgette::steps_filename_pattern':"
       . " $filename"
     );
     return;
   }
 
-  $logger->verbose( "loading steps file: $filename" );
+  verbose( "loading steps file: $filename" );
   try {
     Courgette::World::_load_steps_file( $filename );
   } catch Error with {
