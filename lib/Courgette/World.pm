@@ -11,24 +11,18 @@ use Courgette::Error::AssertFailed;
 use File::Find;
 use Data::Dumper;
 
+use base 'Test::Assert';
+
+
 sub _load_steps_file {
   my $filename = shift;
   my $return;
-
 
   unless( $return = do $filename ) {
     die( "Error parseing step file '$filename': $@" ) if $@;
     die( "Error loading step file '$filename': $!" ) if !defined( $return );
     die( "Step file '$filename' did not return true" ) if !$return;
   }
-}
-
-
-sub ok ($;$) {
-  my( $result, $message ) = @_;
-
-  throw Courgette::Error::AssertFailed ( $message )
-      if( !$result );
 }
 
 

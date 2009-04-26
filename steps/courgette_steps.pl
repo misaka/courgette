@@ -4,15 +4,17 @@ use File::Which;
 Given "courgette is in the user's path", sub {
   my $self = shift;
 
-  $self->{ courgette_path } = '../bin/courgette';
-  ok( $self->{ courgette_path }, "courgette script not found in path" );
+  $self->{ courgette_path } = $0;
+  $self->assert_true(
+    $self->{ courgette_path },
+    "courgette script not found in path"
+   );
 };
 
 
 When "courgette is run with the option --help", sub {
   my $self = shift;
 
-#   return $courgette_output = `bin/courgette --help`;
   return "Courgette has been run";
 };
 
@@ -22,8 +24,12 @@ Then "help information should be displayed", sub {
 
   my $courgette_path = $self->{ courgette_path };
 
-  my $courgette_output = `/opt/local/bin/courgette --help`;
-  ok( $courgette_output, "help information is incorrect" );
+  my $courgette_output = `$courgette_path --help`;
+  $self->assert_matches(
+    qr/Usage:\n\s+courgette \[options\] \[feature_file \| feature_dir\]/,
+    $courgette_output,
+    "help information is correct"
+  );
 };
 
 1;

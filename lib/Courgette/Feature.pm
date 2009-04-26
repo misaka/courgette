@@ -110,7 +110,10 @@ sub load_from_file {
   my $feature_text = $file->getline();
   my @features;
 
-  foreach my $parsed_feature ( @{ $parser->features( $feature_text ) } ) {
+  my $parsed_features = $parser->features( $feature_text );
+  die( "No features found in $filename." ) if( !$parsed_features );
+
+  foreach my $parsed_feature ( @{ $parsed_features } ) {
     push( @features, $class->new( %$parsed_feature ) );
   }
 
