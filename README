@@ -1,5 +1,5 @@
 NAME
-    Courgette - A story runner for Perl.
+    Courgette - A story runner for Perl, a-la Cucumber.
 
 SYNOPSIS
     $ courgette features/login.feature
